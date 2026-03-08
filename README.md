@@ -2,6 +2,8 @@
 
 Projeto de automação de testes contemplando testes ponta a ponta (E2E), testes de API e testes de Carga.
 
+É possível acompanhar o resultado dos testes de API e E2E por meio deste link: https://fm4nds.github.io/click-testes/
+
 ## Estrutura do Projeto
 
 Foi adotada uma arquitetura segmentada por tipos/camadas neste projeto. Consulte as documentações específicas de cada módulo para detalhes de instalação, configuração, execução e relatórios:
@@ -84,3 +86,13 @@ npm run report:open      # Abrir relatório no navegador
 ```
 
 O CI/CD publica o relatório Allure em formato de página no GitHub Pages. A pasta `reports/` armazena as saídas do K6 e as evidências geradas pelo Cypress (vídeos e screenshots).
+
+Evidências Cypress:
+<img width="1470" height="956" alt="Captura de Tela 2026-03-08 às 19 23 56" src="https://github.com/user-attachments/assets/fe0134a2-c539-47a1-bb1e-5dd5d5b63842" />
+
+Evidências API:
+
+<img width="714" height="794" alt="Captura de Tela 2026-03-08 às 19 27 44" src="https://github.com/user-attachments/assets/b143a363-b1df-4738-94a7-776bf08df284" />
+
+Evidências Carga:
+<img width="901" height="839" alt="Captura de Tela 2026-03-08 às 19 28 55" src="https://github.com/user-attachments/assets/6fb9a1e8-ac3e-4427-ae90-ed5240bdc633" />
