@@ -1,0 +1,202 @@
+{
+  "info": {
+    "name": "Testes API",
+    "description": "Collection de testes para a API DummyJSON",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://dummyjson.com"
+    },
+    {
+      "key": "token",
+      "value": ""
+    },
+    {
+      "key": "userId",
+      "value": "1"
+    }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code é 200 ou 201', () => pm.expect([200, 201]).to.include(pm.response.code));",
+                  "pm.test('Resposta contém token', () => {",
+                  "  const json = pm.response.json();",
+                  "  pm.expect(json).to.have.property('accessToken');",
+                  "  pm.collectionVariables.set('token', json.accessToken);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"emilys\",\n  \"password\": \"emilyspass\"\n}"
+            },
+            "url": "{{baseUrl}}/auth/login"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "Listar usuários",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code é 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Resposta contém lista de usuários', () => {",
+                  "  const json = pm.response.json();",
+                  "  pm.expect(json).to.have.property('users');",
+                  "  pm.expect(json.users).to.be.an('array');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/users"
+          }
+        },
+        {
+          "name": "Buscar usuário por ID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code é 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Resposta contém dados do usuário', () => {",
+                  "  const json = pm.response.json();",
+                  "  pm.expect(json).to.have.property('id');",
+                  "  pm.expect(json).to.have.property('username');",
+                  "  pm.expect(json).to.have.property('email');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/users/{{userId}}"
+          }
+        },
+        {
+          "name": "Criar usuário",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code é 200 ou 201', () => pm.expect([200, 201]).to.include(pm.response.code));",
+                  "pm.test('Resposta contém id', () => {",
+                  "  const json = pm.response.json();",
+                  "  pm.expect(json).to.have.property('id');",
+                  "  pm.collectionVariables.set('userId', json.id);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"João\",\n  \"lastName\": \"Silva\",\n  \"username\": \"joao_silva\",\n  \"email\": \"joao@example.com\",\n  \"password\": \"senha123\"\n}"
+            },
+            "url": "{{baseUrl}}/users/add"
+          }
+        },
+        {
+          "name": "Atualizar usuário",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code é 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Resposta contém os campos atualizados', () => {",
+                  "  const json = pm.response.json();",
+                  "  pm.expect(json).to.have.property('firstName');",
+                  "  pm.expect(json).to.have.property('email');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"João Atualizado\",\n  \"email\": \"joao.atualizado@example.com\"\n}"
+            },
+            "url": "{{baseUrl}}/users/{{userId}}"
+          }
+        },
+        {
+          "name": "Deletar usuário",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code é 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Resposta retorna o objeto deletado', () => {",
+                  "  const json = pm.response.json();",
+                  "  pm.expect(json).to.be.an('object');",
+                  "  pm.expect(json).to.have.property('isDeleted', true);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/users/{{userId}}"
+          }
+        }
+      ]
+    }
+  ]
+}

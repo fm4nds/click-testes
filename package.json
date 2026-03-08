@@ -1,0 +1,36 @@
+{
+  "type": "module",
+  "scripts": {
+    "test:smoke": "cypress run --env tags='@smoke'",
+    "test:validacao": "cypress run --env tags='@validacao'",
+    "test:regressao": "cypress run --env tags='@regressao'",
+    "test:negativo": "cypress run --env tags='@negativo'",
+    "test:positivo": "cypress run --env tags='@positivo'",
+    "test:api": "newman run api/postman/collection.json -e api/postman/environment.json -r cli,allure --reporter-allure-export allure-results",
+    "test:carga": "k6 run performance/k6/teste-carga.js",
+    "report:generate": "allure generate allure-results -o allure-report",
+    "report:open": "allure open allure-report"
+  },
+  "overrides": {
+    "object-hash": "^2.0.2"
+  },
+  "devDependencies": {
+    "@badeball/cypress-cucumber-preprocessor": "^24.0.1",
+    "@bahmutov/cypress-esbuild-preprocessor": "^2.2.8",
+    "@cucumber/cucumber": "^12.7.0",
+    "@faker-js/faker": "^10.3.0",
+    "allure": "^3.0.0",
+    "allure-cypress": "^3.6.0",
+    "cypress": "^15.11.0",
+    "eslint": "^10.0.0",
+    "eslint-plugin-cypress": "^6.1.0",
+    "newman": "^6.2.0",
+    "newman-reporter-allure": "^3.6.0",
+    "prettier": "^3.8.1"
+  },
+  "cypress-cucumber-preprocessor": {
+    "stepDefinitions": [
+      "e2e/cypress/support/step_definitions/**/*.js"
+    ]
+  }
+}

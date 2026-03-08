@@ -1,0 +1,161 @@
+name: Testes E2E e API
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  e2e-regressao:
+    name: Testes E2E
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Baixar código
+        uses: actions/checkout@v4
+
+      - name: Configurar Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: Limpar resultados anteriores
+        run: rm -rf allure-results
+
+      - name: Rodar testes E2E @regressao
+        run: npm run test:regressao
+
+      - name: Upload resultados Allure
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-results-e2e
+          path: allure-results
+
+  api-tests:
+    name: Testes API
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Baixar código
+        uses: actions/checkout@v4
+
+      - name: Configurar Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: Limpar resultados anteriores
+        run: rm -rf allure-results
+
+      - name: Rodar testes API (Newman)
+        run: npm run test:api
+
+      - name: Upload resultados Allure
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-results-api
+          path: allure-results
+
+  publish-report:
+    name: Publicar relatório Allure
+    needs: [e2e-regressao, api-tests]
+    if: always() && (github.event_name == 'push')
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Baixar código
+        uses: actions/checkout@v4
+
+      - name: Configurar Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: Baixar resultados E2E
+        uses: actions/download-artifact@v4
+        with:
+          name: allure-results-e2e
+          path: allure-results
+        continue-on-error: true
+
+      - name: Baixar resultados API
+        uses: actions/download-artifact@v4
+        with:
+          name: allure-results-api
+          path: allure-results
+        continue-on-error: true
+
+      - name: Gerar relatório Allure
+        run: npx allure generate allure-results -o allure-report
+
+      - name: Upload artifact Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: allure-report
+
+      - name: Deploy no GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+  upload-report-pr:
+    name: Upload relatório (PR)
+    needs: [e2e-regressao, api-tests]
+    if: always() && (github.event_name == 'pull_request')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Baixar código
+        uses: actions/checkout@v4
+
+      - name: Configurar Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: Baixar resultados E2E
+        uses: actions/download-artifact@v4
+        with:
+          name: allure-results-e2e
+          path: allure-results
+        continue-on-error: true
+
+      - name: Baixar resultados API
+        uses: actions/download-artifact@v4
+        with:
+          name: allure-results-api
+          path: allure-results
+        continue-on-error: true
+
+      - name: Gerar relatório unificado
+        run: npx allure generate allure-results -o allure-report
+
+      - name: Upload relatório Allure
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-report
+          path: allure-report

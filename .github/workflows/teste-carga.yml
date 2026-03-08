@@ -1,0 +1,19 @@
+name: Teste de Carga (K6)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  load-test:
+    name: Testes de Carga
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Baixar código
+        uses: actions/checkout@v4
+
+      - name: Instalar K6
+        uses: grafana/setup-k6-action@v1
+
+      - name: Executar teste de carga
+        run: k6 run performance/k6/teste-carga.js

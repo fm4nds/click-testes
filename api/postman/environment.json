@@ -1,0 +1,10 @@
+{
+  "id": "dummyjson-env",
+  "name": "DummyJSON - API",
+  "values": [
+    { "key": "baseUrl", "value": "https://dummyjson.com", "enabled": true },
+    { "key": "token", "value": "", "enabled": true },
+    { "key": "userId", "value": "1", "enabled": true }
+  ],
+  "_postman_variable_scope": "environment"
+}

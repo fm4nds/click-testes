@@ -1,0 +1,49 @@
+node_modules
+.tmp
+.sass-cache
+.DS_Store
+npm-debug.log
+tmp
+.projects
+*.orig
+
+# Cypress
+screenshots
+videos
+cypress/downloads
+cypress/videos
+cypress/screenshots
+out.js
+examples/*/cypress/logs
+examples/*/cypress/downloads
+snapshots.js
+
+# Allure
+allure-results
+allure-report
+
+# Coverage e build
+.nyc_output
+coverage
+dist
+
+# Dados e cache
+test-data.json
+examples/stubbing-spying__intercept/users5.json
+**/.parcel-cache
+examples/*/data.json
+
+# Ambiente (credenciais, secrets)
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+logs
+
+# Evidências (mantém pasta)
+reports/evidencias/*
+!reports/evidencias/.gitkeep
+!reports/k6-saida.txt
+docs/
